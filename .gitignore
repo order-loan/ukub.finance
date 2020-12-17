@@ -1,4 +1,5 @@
-node_modules
+#UI
+frontend/node_modules
 
 #Hardhat files
 cache
@@ -6,3 +7,4 @@ artifacts
 
 
 
+node_modules
