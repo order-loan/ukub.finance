@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Button from '@material-ui/core/Button';
+import { Dapp } from "./components/Dapp";
+
+// import "bootstrap/dist/css/bootstrap.css";
 
 function App() {
   return (
-    <Button variant="contained" color="primary">
-      Hello World
-    </Button>
+    <React.StrictMode>
+    <Dapp />
+  </React.StrictMode>
   );
 }
 
