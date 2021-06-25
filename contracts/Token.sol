@@ -1,93 +1,59 @@
-// ERC-20 Token
+// Solidity files have to start with this pragma.
+// It will be used by the Solidity compiler to validate its version.
 pragma solidity ^0.7.0;
 
-interface IERC20 {
+// This is the main building block for smart contracts.
+contract Token {
+    // Some string type variables to identify the token.
+    // The `public` modifier makes a variable readable from outside the contract.
+    string public name = "My Hardhat Token";
+    string public symbol = "MHT";
 
-    function totalSupply() external view returns (uint256);
-    function balanceOf(address account) external view returns (uint256);
-    function allowance(address owner, address spender) external view returns (uint256);
+    // The fixed amount of tokens stored in an unsigned integer type variable.
+    uint256 public totalSupply = 1000000;
 
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    // An address type variable is used to store ethereum accounts.
+    address public owner;
 
-
-  //  event Transfer(address indexed from, address indexed to, uint256 value);
-   // event Approval(address indexed owner, address indexed spender, uint256 value);
-}
-
-
-contract Token is IERC20 {
-
-    string public constant name = "ERC20Ukub";
-    string public constant symbol = "UKUB";
-    uint8 public constant decimals = 18;  
-
-
-    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
-    event Transfer(address indexed from, address indexed to, uint tokens);
-
-
+    // A mapping is a key/value map. Here we store each account balance.
     mapping(address => uint256) balances;
 
-    mapping(address => mapping (address => uint256)) allowed;
-    
-    uint256 totalSupply_ = 4000000;
-
-    using SafeMath for uint256;
-
-
-   constructor() public {
-	balances[msg.sender] = totalSupply_;
-    }  
-
-    function totalSupply() public override view returns (uint256) {
-	return totalSupply_;
-    }
-    
-    function balanceOf(address tokenOwner) public override view returns (uint256) {
-        return balances[tokenOwner];
+    /**
+     * Contract initialization.
+     *
+     * The `constructor` is executed only once when the contract is created.
+     */
+    constructor() {
+        // The totalSupply is assigned to transaction sender, which is the account
+        // that is deploying the contract.
+        balances[msg.sender] = totalSupply;
+        owner = msg.sender;
     }
 
-    function transfer(address receiver, uint256 numTokens) public override returns (bool) {
-        require(numTokens <= balances[msg.sender], "Not Enough Tokens!");
-        balances[msg.sender] = balances[msg.sender].sub(numTokens);
-        balances[receiver] = balances[receiver].add(numTokens);
-        emit Transfer(msg.sender, receiver, numTokens);
-        return true;
+    /**
+     * A function to transfer tokens.
+     *
+     * The `external` modifier makes a function *only* callable from outside
+     * the contract.
+     */
+    function transfer(address to, uint256 amount) external {
+        // Check if the transaction sender has enough tokens.
+        // If `require`'s first argument evaluates to `false` then the
+        // transaction will revert.
+        require(balances[msg.sender] >= amount, "Not enough tokens");
+
+        // Transfer the amount.
+        balances[msg.sender] -= amount;
+        balances[to] += amount;
     }
 
-    function approve(address delegate, uint256 numTokens) public override returns (bool) {
-        allowed[msg.sender][delegate] = numTokens;
-        emit Approval(msg.sender, delegate, numTokens);
-        return true;
-    }
-
-    function allowance(address owner, address delegate) public override view returns (uint) {
-        return allowed[owner][delegate];
-    }
-
-    function transferFrom(address owner, address buyer, uint256 numTokens) public override returns (bool) {
-        require(numTokens <= balances[owner]);    
-        require(numTokens <= allowed[owner][msg.sender]);
-    
-        balances[owner] = balances[owner].sub(numTokens);
-        allowed[owner][msg.sender] = allowed[owner][msg.sender].sub(numTokens);
-        balances[buyer] = balances[buyer].add(numTokens);
-        emit Transfer(owner, buyer, numTokens);
-        return true;
-    }
-}
-
-library SafeMath { 
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-      assert(b <= a);
-      return a - b;
-    }
-    
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-      uint256 c = a + b;
-      assert(c >= a);
-      return c;
+    /**
+     * Read only function to retrieve the token balance of a given account.
+     *
+     * The `view` modifier indicates that it doesn't modify the contract's
+     * state, which allows us to call it without executing a transaction.
+     */
+    function balanceOf(address account) external view returns (uint256) {
+        return balances[account];
     }
 }
