@@ -6,11 +6,11 @@ pragma solidity ^0.7.0;
 contract Token {
     // Some string type variables to identify the token.
     // The `public` modifier makes a variable readable from outside the contract.
-    string public name = "My Hardhat Token";
-    string public symbol = "MHT";
+    string public name = "Ukub";
+    string public symbol = "UKB";
 
-    // The fixed amount of tokens stored in an unsigned integer type variable.
-    uint256 public totalSupply = 1000000;
+    // 3000000 for the number of Eritreans all over the world!
+    uint256 public totalSupply = 3000000;
 
     // An address type variable is used to store ethereum accounts.
     address public owner;

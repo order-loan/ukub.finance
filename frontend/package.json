@@ -22,7 +22,7 @@
     "react-dom": "latest",
     "react-scripts": "latest"
   },
-"browserslist": {
+  "browserslist": {
     "production": [
       ">0.2%",
       "not dead",
